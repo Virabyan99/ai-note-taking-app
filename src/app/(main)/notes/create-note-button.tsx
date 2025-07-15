@@ -1,45 +1,45 @@
-"use client";
+'use client'
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Plus } from "lucide-react";
-import { useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
-import { toast } from "sonner";
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Plus } from 'lucide-react'
+import { useAction } from 'convex/react'
+import { api } from '../../../../convex/_generated/api'
+import { toast } from 'sonner'
 
 const noteFormSchema = z.object({
   title: z.string().min(1, {
-    message: "Title cannot be empty.",
+    message: 'Title cannot be empty.',
   }),
   body: z.string().min(1, {
-    message: "Body cannot be empty.",
+    message: 'Body cannot be empty.',
   }),
-});
+})
 
 export function CreateNoteButton() {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false)
 
   return (
     <>
@@ -49,25 +49,24 @@ export function CreateNoteButton() {
       </Button>
       <CreateNoteDialog open={dialogOpen} onOpenChange={setDialogOpen} />
     </>
-  );
+  )
 }
 
 interface CreateNoteDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }
 
 function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
-  const createNote = useMutation(api.notes.createNote);
+  const createNote = useAction(api.notesActions.createNote)
 
   const form = useForm<z.infer<typeof noteFormSchema>>({
     resolver: zodResolver(noteFormSchema),
     defaultValues: {
-      title: "",
-      body: "",
+      title: '',
+      body: '',
     },
-  });
-
+  })
 
   const isSubmiting = form.formState.isSubmitting
 
@@ -75,14 +74,14 @@ function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
     try {
       await createNote({
         title: values.title,
-        body: values.body
+        body: values.body,
       })
-      toast.success("Note created successfully");
+      toast.success('Note created successfully')
       form.reset()
-      onOpenChange(false);
+      onOpenChange(false)
     } catch (error) {
-      console.error("Error creating Note", error);
-      toast.error("Failed to create Note. Please try again.");
+      console.error('Error creating Note', error)
+      toast.error('Failed to create Note. Please try again.')
     }
   }
 
@@ -125,13 +124,13 @@ function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
               )}
             />
             <DialogFooter>
-              <Button type="submit" disabled={isSubmiting} >
-                {isSubmiting ? "Saving..." : "Save"}
+              <Button type="submit" disabled={isSubmiting}>
+                {isSubmiting ? 'Saving...' : 'Save'}
               </Button>
             </DialogFooter>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }
