@@ -15,7 +15,6 @@ import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useState } from "react";
 import { toast } from "sonner";
-import { de } from "zod/v4/locales";
 
 interface CreateNoteDialogProps {
   note: Doc<"notes">
